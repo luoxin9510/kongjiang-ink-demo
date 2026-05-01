@@ -354,6 +354,17 @@ nav#choices button {
   transition: background 0.15s, border-color 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
+@media (max-width: 600px) {
+  nav#choices { gap: 6px; padding-top: 8px; max-height: 42%; }
+  nav#choices button {
+    padding: 9px 12px;
+    font-size: 14px;
+    line-height: 1.35;
+    min-height: 40px;
+    border-radius: 8px;
+  }
+  nav#choices button.continue { font-size: 18px; padding: 8px; }
+}
 nav#choices button:active,
 nav#choices button:hover {
   background: var(--panel-hover);
@@ -594,6 +605,7 @@ nav#choices .restart, nav#choices .next-act {
   <div class="langs">
     <a href="en/index.html">English</a>
   </div>
+  <div style="margin-top:24px;font-size:10px;color:#444;letter-spacing:0.2em;text-align:center;">BUILD 2026-05-02-A</div>
 </div>
 
 <!-- ============ Game ============ -->
