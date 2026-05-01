@@ -1328,7 +1328,7 @@ document.getElementById("show-achievements").onclick = () => {
 // ============================================================
 async function startGame(act, seedOverride, continueFromSave) {
   currentAct = act;
-  const url = act === 0 ? "kongjiang_act0.json" : "kongjiang_act1.json";
+  const url = `kongjiang_act${act}.json`;
   try {
     const resp = await fetch(url);
     if (!resp.ok) throw new Error("Failed to load " + url + ": " + resp.status);

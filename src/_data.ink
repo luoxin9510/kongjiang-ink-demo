@@ -66,7 +66,7 @@ VAR 当前地点 = "loc_dorm_302"
 VAR 背包 = ()
 
 // 已遭遇 NPC（用 list 集合）
-LIST 已遇NPC列表 = enc_lujianqiao, enc_yaojunjie, enc_duanzhihao, enc_huyijia, enc_dumingcai
+LIST 已遇NPC列表 = enc_lujianqiao, enc_yaojunjie, enc_duanzhihao, enc_huyijia, enc_dumingcai, enc_huangxingshu, enc_zhangbaoxing
 VAR 已遇NPC = ()
 
 // 锚点 A 实际分配（运行时随机选）
@@ -91,3 +91,85 @@ VAR 走廊4F_已访 = false
 // 物品计数（简化：单数量）
 VAR 急救包_数 = 0
 VAR 绷带_数 = 0
+
+
+// === Act 2 新增 ===
+
+// 锚点 B 候选（Act 2）
+LIST 锚点B候选 = npc_huangxingshu, npc_zhangbaoxing
+VAR 锚点B_id = ""
+VAR 锚点B_遭遇 = false
+
+// 全楼钥匙板（2F 宿管室获得）
+VAR 全楼钥匙板 = false
+
+// 感染 NPC 目击（路人，非 F4 队友）
+VAR 感染NPC_目击 = false
+
+// Act 2 投票（含嘴炮影响）
+VAR 投票_PC = 0       // 1=正门突围 2=5F 天台 3=干扰仪式
+VAR 投票_志勇 = 0
+VAR 投票_砚波 = 0
+VAR 投票_张怡 = 0
+
+// 嘴炮成功标记（玩家是否成功说服该队友）
+VAR 嘴炮_志勇 = false
+VAR 嘴炮_砚波 = false
+VAR 嘴炮_张怡 = false
+
+// Act 2 场景已访
+VAR 走廊2F_已访 = false
+VAR 走廊1F_已访 = false
+VAR 采样大厅_已访 = false
+VAR 宿管室_已访 = false
+
+// Act 2/3 衔接
+VAR Act2结束 = false
+VAR Act3路径 = 0      // 1=正门突围 2=5F 天台 3=干扰仪式
+
+
+// === Act 3 新增 ===
+
+// 共识抉择
+LIST 共识选项 = c_战斗, c_牺牲, c_同化, c_撤退, c_秘密
+VAR 共识选择 = 0       // 1=战斗 2=牺牲 3=同化 4=撤退 5=E7 秘密
+
+// Boss 战
+VAR Boss阶段 = 0       // 0=未开始 1/2/3=阶段
+VAR Boss_HP_阶段1 = 12
+VAR Boss_HP_阶段2 = 10
+VAR Boss_HP_阶段3 = 8
+VAR Boss战_回合 = 0
+
+// 牺牲 / 同化对象
+VAR 牺牲对象 = ""
+VAR 同化对象 = ""
+
+// 神秘学加成（张怡持手册时临时增加）
+VAR 神秘学加成 = 0
+
+// SAN 临界状态
+VAR 恍惚状态 = false
+VAR 强制E5 = false
+
+// 路径关键标记
+VAR 防疫手册_解码 = false
+VAR 母核_看见 = false
+VAR H6_触发 = false
+
+// 队友存活
+VAR 队友存活_志勇 = true
+VAR 队友存活_砚波 = true
+VAR 队友存活_张怡 = true
+VAR 队友存活_昕 = true
+
+// Act 3 场景已访
+VAR 5F走廊_已访 = false
+VAR 5F值班室_已访 = false
+VAR 天台_已访 = false
+VAR 入口大门_已访 = false
+VAR 母核大厅_已访 = false
+
+// Act 3 结束 + 最终结局
+VAR Act3结束 = false
+VAR 最终结局 = 0       // 1-7 = E1-E7
