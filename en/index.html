@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B0B0E">
-<title>控江隔离 · 序章</title>
+<title>Kongjiang Lockdown · Prologue</title>
 <style>
 :root {
   --bg: #0B0B0E;
@@ -21,9 +21,9 @@ html, body {
   padding: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  font-family: "EB Garamond", "Iowan Old Style", "Palatino", Georgia, serif;
   font-size: 17px;
-  line-height: 1.85;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior: none;
 }
@@ -79,6 +79,7 @@ main {
   font-size: 13px;
   margin-bottom: 0.2em;
   letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 #story p.scene {
   color: var(--dim);
@@ -93,7 +94,7 @@ main {
   font-weight: 600;
   font-size: 19px;
   margin: 2em 0;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.15em;
   color: var(--accent);
 }
 @keyframes fadeIn {
@@ -151,12 +152,12 @@ nav#choices .restart {
 <body>
 
 <header class="hud" id="hud">
-  <span class="stat">理智 <b id="san">—</b></span>
-  <span class="stat">昕 恐惧 <b id="fear-xin">—</b></span>
-  <span class="stat">志勇 恐惧 <b id="fear-zy">—</b></span>
-  <span class="stat">张怡 恐惧 <b id="fear-zy2">—</b></span>
-  <span class="stat">回合 <b id="rounds">0</b></span>
-  <a class="lang" href="en/">EN</a>
+  <span class="stat">SAN <b id="san">—</b></span>
+  <span class="stat">Xin fear <b id="fear-xin">—</b></span>
+  <span class="stat">Zhiyong <b id="fear-zy">—</b></span>
+  <span class="stat">Zhangyi <b id="fear-zy2">—</b></span>
+  <span class="stat">Round <b id="rounds">0</b></span>
+  <a class="lang" href="../">中</a>
 </header>
 
 <main id="story" aria-live="polite"></main>
@@ -166,11 +167,11 @@ nav#choices .restart {
 <script src="https://unpkg.com/inkjs@2.3.1/dist/ink.js"></script>
 <script>
 const SPEAKER_LABELS = {
-  player: "你",
-  xin: "昕",
-  zhiyong: "志勇",
-  zhangyi: "张怡",
-  yanbo: "砚波",
+  player: "You",
+  xin: "Xin",
+  zhiyong: "Zhiyong",
+  zhangyi: "Zhangyi",
+  yanbo: "Yanbo",
 };
 
 const storyEl = document.getElementById("story");
@@ -182,7 +183,7 @@ function showError(msg) {
 
 function renderHUD(story) {
   const v = story.variablesState;
-  document.getElementById("san").textContent = v["理智_昕"];
+  document.getElementById("san").textContent = v["san_xin"];
   const setFear = (id, val) => {
     const el = document.getElementById(id);
     el.textContent = val;
@@ -190,10 +191,10 @@ function renderHUD(story) {
     if (val >= 50) stat.classList.add("warn");
     else stat.classList.remove("warn");
   };
-  setFear("fear-xin", v["恐惧_昕"]);
-  setFear("fear-zy", v["恐惧_志勇"]);
-  setFear("fear-zy2", v["恐惧_张怡"]);
-  document.getElementById("rounds").textContent = v["回合数"];
+  setFear("fear-xin", v["fear_xin"]);
+  setFear("fear-zy", v["fear_zhiyong"]);
+  setFear("fear-zy2", v["fear_zhangyi"]);
+  document.getElementById("rounds").textContent = v["round_count"];
 }
 
 function appendParagraph(text, cls) {
@@ -201,12 +202,10 @@ function appendParagraph(text, cls) {
   if (cls) p.className = cls;
   p.textContent = text;
   storyEl.appendChild(p);
-  // Auto-scroll to keep latest paragraph visible
   p.scrollIntoView({ behavior: "smooth", block: "end" });
 }
 
 function processTags(tags) {
-  // Returns { speaker, scene } extracted from tags; rest ignored
   let speaker = null, scene = null;
   for (const t of tags || []) {
     const [k, v] = t.split(":").map(s => s.trim());
@@ -225,7 +224,7 @@ function continueStory(story) {
     const { speaker, scene } = processTags(story.currentTags);
 
     if (scene && scene !== lastScene) {
-      appendParagraph(`〔场景：${scene}〕`, "scene");
+      appendParagraph(`〔${scene}〕`, "scene");
       lastScene = scene;
     }
     if (speaker && speaker !== lastSpeaker) {
@@ -233,11 +232,10 @@ function continueStory(story) {
       lastSpeaker = speaker;
     }
     if (text) {
-      // Check end-of-prologue marker via tag-class fallback
       const isEnd = (story.currentTags || []).some(t => t.startsWith("CLASS:"));
       appendParagraph(text, isEnd ? "end" : null);
     }
-    if (!speaker) lastSpeaker = null;  // reset speaker between blocks
+    if (!speaker) lastSpeaker = null;
   }
 
   renderHUD(story);
@@ -247,10 +245,9 @@ function continueStory(story) {
 function renderChoices(story) {
   choicesEl.innerHTML = "";
   if (story.currentChoices.length === 0) {
-    // Story ended
     const btn = document.createElement("button");
     btn.className = "restart";
-    btn.textContent = "重新开始";
+    btn.textContent = "Restart";
     btn.onclick = () => location.reload();
     choicesEl.appendChild(btn);
     choicesEl.classList.remove("empty");
@@ -261,7 +258,6 @@ function renderChoices(story) {
     btn.textContent = choice.text;
     btn.onclick = () => {
       story.ChooseChoiceIndex(i);
-      // Clear "speaker" memory so next block can re-show it
       lastSpeaker = null;
       continueStory(story);
     };
@@ -272,13 +268,13 @@ function renderChoices(story) {
 
 async function main() {
   try {
-    const resp = await fetch("kongjiang_act0.json");
+    const resp = await fetch("kongjiang_act0_en.json");
     if (!resp.ok) throw new Error(`Failed to load story: ${resp.status}`);
     const json = await resp.text();
     const story = new inkjs.Story(json);
     continueStory(story);
   } catch (e) {
-    showError("加载失败：" + e.message);
+    showError("Load failed: " + e.message);
     console.error(e);
   }
 }
