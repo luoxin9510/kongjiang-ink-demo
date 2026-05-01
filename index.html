@@ -28,12 +28,13 @@ html, body {
   font-size: 17px;
   line-height: 1.85;
   -webkit-font-smoothing: antialiased;
-  overscroll-behavior: none;
 }
+html { height: 100%; overscroll-behavior: none; }
 body {
-  min-height: 100vh; min-height: 100dvh;
+  height: 100vh; height: 100dvh;
+  overflow: hidden;
   display: flex; flex-direction: column;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
 
 /* ============ Title screen ============ */
@@ -252,6 +253,12 @@ header.hud {
 /* ============ Story ============ */
 main {
   flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   padding: 18px 18px 8px;
   max-width: 720px; width: 100%;
   margin: 0 auto;
@@ -309,7 +316,12 @@ main {
 
 /* ============ Choices ============ */
 nav#choices {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  max-height: 50vh; max-height: 50dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   padding: 12px 18px calc(env(safe-area-inset-bottom) + 16px);
   max-width: 720px; width: 100%;
   margin: 0 auto;
