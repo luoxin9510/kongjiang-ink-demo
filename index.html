@@ -519,6 +519,102 @@ nav#choices .restart, nav#choices .next-act {
   flex: 1 1 auto;
 }
 .sheet .tab-content.hidden { display: none; }
+
+/* ============ Clues tab ============ */
+.awareness-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.awareness-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 13px; line-height: 1.5;
+  padding: 6px 0;
+}
+.awareness-item .dot {
+  flex: 0 0 auto;
+  width: 10px; height: 10px; border-radius: 50%;
+  margin-top: 5px;
+  background: var(--border);
+}
+.awareness-item.unlocked .dot { background: var(--accent); box-shadow: 0 0 8px rgba(184,58,58,0.5); }
+.awareness-item .label {
+  flex: 0 0 auto; font-weight: 500; min-width: 70px;
+}
+.awareness-item.locked .label { color: var(--dim2); }
+.awareness-item .desc { color: var(--dim); flex: 1 1 auto; }
+.awareness-item.locked .desc { color: var(--dim2); }
+
+.ecology-detail {
+  margin-bottom: 12px;
+  padding: 12px; background: var(--panel); border-radius: 8px;
+}
+.ecology-bar-detail {
+  display: flex; gap: 4px; margin-bottom: 8px;
+}
+.ecology-tick {
+  flex: 1 1 0; height: 14px; border-radius: 3px;
+  background: var(--border);
+}
+.ecology-tick.filled { background: var(--accent); }
+.ecology-current {
+  font-size: 13px; line-height: 1.5;
+  color: var(--fg); margin-top: 8px;
+}
+.ecology-current .level-label { color: var(--accent); font-weight: 500; }
+
+.npc-list { display: flex; flex-direction: column; gap: 8px; }
+.npc-card {
+  display: flex; gap: 10px;
+  padding: 10px 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.npc-card .icon { font-size: 24px; line-height: 1; }
+.npc-card .body { flex: 1 1 auto; min-width: 0; }
+.npc-card .name { font-size: 14px; font-weight: 500; }
+.npc-card .role { font-size: 12px; color: var(--dim); margin-top: 1px; }
+.npc-card .status { font-size: 11px; color: var(--dim2); margin-top: 4px; line-height: 1.4; }
+.npc-card.infected { border-color: rgba(184,58,58,0.6); }
+.npc-card.infected .name::after { content: " · 已感染"; color: var(--accent); font-size: 11px; font-weight: normal; }
+.npc-empty { color: var(--dim2); font-size: 12px; padding: 8px 0; font-style: italic; }
+
+/* ============ Map tab ============ */
+.map-meta {
+  font-size: 13px; color: var(--dim); margin-bottom: 14px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+.map-meta #map-current { color: var(--fg); font-weight: 500; }
+.map-floors { display: flex; flex-direction: column; gap: 10px; }
+.map-floor {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0;
+}
+.map-floor .floor-label {
+  flex: 0 0 auto;
+  width: 32px;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 13px; font-weight: 600;
+  color: var(--dim);
+  text-align: center;
+  padding-top: 4px;
+}
+.map-floor .rooms {
+  flex: 1 1 auto; display: flex; flex-wrap: wrap; gap: 6px;
+}
+.map-room {
+  font-size: 12px;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--dim2);
+}
+.map-room.visited { color: var(--fg); }
+.map-room.current {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(184,58,58,0.5);
+}
+.map-room.current::before { content: "⭐ "; }
 .sheet h2 { font-size: 18px; font-weight: 600; margin: 4px 0 2px; }
 .sheet h3 {
   font-size: 12px; color: var(--dim); font-weight: 500;
@@ -684,7 +780,7 @@ nav#choices .restart, nav#choices .next-act {
   <div class="langs">
     <a href="en/index.html">English</a>
   </div>
-  <div style="margin-top:24px;font-size:10px;color:#444;letter-spacing:0.2em;text-align:center;" id="build-tag">BUILD 2026-05-02-B</div>
+  <div style="margin-top:24px;font-size:10px;color:#444;letter-spacing:0.2em;text-align:center;" id="build-tag">BUILD 2026-05-02-C</div>
 </div>
 
 <!-- Chapter Select Modal -->
@@ -726,7 +822,9 @@ nav#choices .restart, nav#choices .next-act {
   <div class="handle"></div>
   <div class="tabs">
     <button class="tab-btn active" data-tab="stats">属性</button>
-    <button class="tab-btn" data-tab="log">检定记录</button>
+    <button class="tab-btn" data-tab="clues">线索</button>
+    <button class="tab-btn" data-tab="map">地图</button>
+    <button class="tab-btn" data-tab="log">检定</button>
     <button class="tab-btn" data-tab="comp">队友</button>
     <button class="tab-btn" data-tab="ach">成就</button>
   </div>
@@ -758,6 +856,18 @@ nav#choices .restart, nav#choices .next-act {
   <div class="tab-content hidden" id="tab-ach">
     <div class="ach-summary"><b id="ach-unlocked-num">0</b> / <span id="ach-total-num">0</span> 已解锁</div>
     <div class="ach-list" id="ach-list"></div>
+  </div>
+  <div class="tab-content hidden" id="tab-clues">
+    <h3>觉知链</h3>
+    <div class="awareness-list" id="clues-awareness"></div>
+    <h3>生态置信度</h3>
+    <div class="ecology-detail" id="clues-ecology"></div>
+    <h3>已遇 NPC</h3>
+    <div class="npc-list" id="clues-npcs"></div>
+  </div>
+  <div class="tab-content hidden" id="tab-map">
+    <div class="map-meta" id="map-meta">📍 当前位置：<span id="map-current">—</span></div>
+    <div class="map-floors" id="map-floors"></div>
   </div>
 </div>
 
@@ -878,6 +988,78 @@ const TRANSFER_VARS = [
   "战斗结局", "已进过泡面", "seed",
 ];
 
+// 觉知链 6 节固定顺序 + 描述
+const AWARENESS_CHAIN = [
+  { key: "一切如常", label: "一切如常",   desc: "封控第七天，和过去六天没有不同。" },
+  { key: "隐约不安", label: "隐约不安",   desc: "走廊外的脚步、甜腥的气味、太整齐的列队……" },
+  { key: "闻到甜腥", label: "闻到甜腥",   desc: "活的、潮的、像熟过的水果——味道在楼里漫开。" },
+  { key: "第一次敲门", label: "三声敲门", desc: "咚——咚——咚。门外没有应答。" },
+  { key: "第二次敲门", label: "再次叩门", desc: "节奏一致。第二轮敲门后，门外的呼吸没有走开。" },
+  { key: "门外有东西", label: "它存在",   desc: "你看到的不是错觉。它存在。它还会再来。" },
+];
+
+// 生态置信度 1-7 各档对应的揭示
+const ECOLOGY_LEVELS = [
+  null,
+  "1/7：序章前，仅是不安的氛围。",
+  "2/7：序章末，门外的脚步声有节律——它们不是人。",
+  "3/7：感染者的步伐过分整齐，像被同步。",
+  "4/7：地砖缝里的菌丝、感染者皮肤下的几何纹路。",
+  "5/7：感染者进食的红色肉芽；菌丝从地下贯通楼栋。",
+  "6/7：1F 母核位置确认；菌丝网络已贯穿下水管道。",
+  "7/7：莎布·尼古拉丝菌丝母体——所有感染体连成同一个生命。",
+];
+
+// NPC 元数据：id → 卡片信息
+const NPC_CARDS = {
+  npc_lujianqiao: { name: "卢剑桥", icon: "📓", role: "Act 1 学霸 · 305 室", trustVar: "信任_昕", note: "记录了 3F 巡逻规律。可能给你二楼宿管室钥匙。" },
+  npc_yaojunjie:  { name: "姚俊杰", icon: "🔑", role: "Act 1 班长 · 303 室", trustVar: "信任_昕", note: "举止拘谨，手腕下有几何纹路——已感染但仍能交流。", infectedFlag: "yao_infected_seen" },
+  npc_huangxingshu: { name: "黄兴树", icon: "💵", role: "Act 2 富二代 · 1F 储藏室", trustVar: "信任_昕", note: "情报：5 楼天台门、采样大厅菌丝。" },
+  npc_zhangbaoxing: { name: "张宝兴", icon: "🧥", role: "Act 2 卫衣男 · 2F 走廊", trustVar: "信任_昕", note: "情报：5F UPS 供电、'M' 字头组织、采样大厅地图。" },
+  npc_huyijia:    { name: "胡一嘉", icon: "🩸", role: "Act 2 已感染 · 1F 采样大厅", trustVar: null, note: "脖颈下几何菌丝纹路，仍在说话——是它们的一部分。", isInfected: true },
+  npc_gucong:     { name: "顾聪",   icon: "⚽", role: "Act 3 已感染 · 5F 天台", trustVar: null, note: "踢着足球，平静地看世界——已经'醒来'，与母核连接。", isInfected: true },
+};
+
+// 楼栋 → 房间映射 (location_id → 显示名 / 楼层 / 已访 var)
+const FLOORS = [
+  { id: "5F", label: "5F", rooms: [
+    { id: "corridor_5f",  label: "走廊",    visitedVar: "5F走廊_已访" },
+    { id: "duty_room_5f", label: "值班室",  visitedVar: "5F值班室_已访" },
+    { id: "rooftop",      label: "天台",    visitedVar: "天台_已访" },
+  ]},
+  { id: "4F", label: "4F", rooms: [
+    { id: "corridor_4f",  label: "走廊",    visitedVar: "走廊4F_已访" },
+  ]},
+  { id: "3F", label: "3F", rooms: [
+    { id: "loc_dorm_302", label: "302", visitedVar: null, aliases: ["dorm_302"] },  // 起点，永远已访
+    { id: "corridor_3f",  label: "走廊", visitedVar: "走廊3F_已访" },
+    { id: "stairwell_a",  label: "楼梯 A", visitedVar: null },
+    { id: "stairwell_b",  label: "楼梯 B", visitedVar: null },
+  ]},
+  { id: "2F", label: "2F", rooms: [
+    { id: "corridor_2f",      label: "走廊",   visitedVar: "走廊2F_已访" },
+    { id: "dorm_manager_2f",  label: "宿管室", visitedVar: "宿管室_已访" },
+  ]},
+  { id: "1F", label: "1F", rooms: [
+    { id: "corridor_1f",     label: "走廊",     visitedVar: "走廊1F_已访" },
+    { id: "storage_1f",      label: "储藏室",   visitedVar: null },
+    { id: "sampling_hall",   label: "采样大厅", visitedVar: "采样大厅_已访" },
+  ]},
+  { id: "B1", label: "B1", rooms: [
+    { id: "underground_core", label: "母核大厅", visitedVar: "母核大厅_已访" },
+  ]},
+];
+// Friendly current-location names for the map header
+const LOCATION_NAMES = {
+  loc_dorm_302: "302 寝室", dorm_302: "302 寝室",
+  corridor_3f: "3 楼走廊", corridor_4f: "4 楼走廊", corridor_2f: "2 楼走廊", corridor_1f: "1 楼走廊", corridor_5f: "5 楼走廊",
+  stairwell_a: "楼梯 A", stairwell_b: "楼梯 B",
+  duty_room_5f: "5F 值班室", rooftop: "天台",
+  dorm_manager_2f: "2F 宿管室",
+  storage_1f: "1F 储藏室", sampling_hall: "1F 采样大厅",
+  underground_core: "母核大厅",
+};
+
 // ============================================================
 // State
 // ============================================================
@@ -997,7 +1179,11 @@ function renderHUD() {
   setFear("fear-zy", v["恐惧_志勇"]);
   setFear("fear-zy2", v["恐惧_张怡"]);
   document.getElementById("rounds").textContent = v["回合数"] || 0;
-  if (sheet.classList.contains("open")) renderPanel();
+  if (sheet.classList.contains("open")) {
+    renderPanel();
+    if (!document.getElementById("tab-clues").classList.contains("hidden")) renderCluesTab();
+    if (!document.getElementById("tab-map").classList.contains("hidden")) renderMapTab();
+  }
   // Auto achievement detection
   detectAchievements();
   // Chapter completion detection — fires once per Act when its 结束 var flips
@@ -1414,6 +1600,108 @@ function renderLog() {
   });
 }
 
+function renderCluesTab() {
+  if (!story) return;
+  const v = story.variablesState;
+
+  // 觉知链
+  const aw = document.getElementById("clues-awareness");
+  aw.innerHTML = "";
+  const awSet = String(v["觉知"] || "");
+  AWARENESS_CHAIN.forEach(node => {
+    const got = awSet.includes(node.key);
+    const div = document.createElement("div");
+    div.className = "awareness-item " + (got ? "unlocked" : "locked");
+    div.innerHTML =
+      '<span class="dot"></span>' +
+      '<span class="label">' + escapeHTML(node.label) + '</span>' +
+      '<span class="desc">' + (got ? escapeHTML(node.desc) : "——") + '</span>';
+    aw.appendChild(div);
+  });
+
+  // 生态置信度
+  const eco = document.getElementById("clues-ecology");
+  const cur = parseInt(v["生态置信度"] || 0, 10);
+  let bars = '<div class="ecology-bar-detail">';
+  for (let i = 1; i <= 7; i++) {
+    bars += '<div class="ecology-tick' + (i <= cur ? ' filled' : '') + '"></div>';
+  }
+  bars += '</div>';
+  const desc = ECOLOGY_LEVELS[cur] || "尚未察觉异常。";
+  const lockedHint = cur < 7
+    ? '<div style="font-size:11px;color:var(--dim2);margin-top:6px;">下一档：???</div>'
+    : '';
+  eco.innerHTML = bars +
+    '<div class="ecology-current"><span class="level-label">当前 ' + cur + '/7</span> · ' + escapeHTML(desc) + '</div>' +
+    lockedHint;
+
+  // NPC 卡
+  const npcEl = document.getElementById("clues-npcs");
+  npcEl.innerHTML = "";
+  const seenSet = String(v["已遇NPC"] || "");
+  // 根据已遇 NPC list + 特殊感染目击 flag 来判定
+  const seen = [];
+  if (seenSet.includes("enc_lujianqiao") || v["锚点A_id"] === "npc_lujianqiao" && v["锚点A_遭遇"]) seen.push("npc_lujianqiao");
+  if (seenSet.includes("enc_yaojunjie")  || v["锚点A_id"] === "npc_yaojunjie"  && v["锚点A_遭遇"]) seen.push("npc_yaojunjie");
+  if (seenSet.includes("enc_huangxingshu") || v["锚点B_id"] === "npc_huangxingshu" && v["锚点B_遭遇"]) seen.push("npc_huangxingshu");
+  if (seenSet.includes("enc_zhangbaoxing") || v["锚点B_id"] === "npc_zhangbaoxing" && v["锚点B_遭遇"]) seen.push("npc_zhangbaoxing");
+  if (v["感染NPC_目击"]) seen.push("npc_huyijia");
+  if (v["Act3路径"] === 2 && v["天台_已访"]) seen.push("npc_gucong");
+
+  const unique = [...new Set(seen)];
+  if (unique.length === 0) {
+    npcEl.innerHTML = '<div class="npc-empty">还未遇见可调查的 NPC。</div>';
+    return;
+  }
+  unique.forEach(id => {
+    const card = NPC_CARDS[id];
+    if (!card) return;
+    const div = document.createElement("div");
+    div.className = "npc-card" + (card.isInfected ? " infected" : "");
+    let trustLine = "";
+    if (card.trustVar) {
+      const t = parseInt(v[card.trustVar] || 0, 10);
+      trustLine = `<div class="status">信任 ${t}/100</div>`;
+    }
+    div.innerHTML =
+      '<span class="icon">' + card.icon + '</span>' +
+      '<div class="body">' +
+      '<div class="name">' + escapeHTML(card.name) + '</div>' +
+      '<div class="role">' + escapeHTML(card.role) + '</div>' +
+      '<div class="status">' + escapeHTML(card.note) + '</div>' +
+      trustLine +
+      '</div>';
+    npcEl.appendChild(div);
+  });
+}
+
+function renderMapTab() {
+  if (!story) return;
+  const v = story.variablesState;
+  const cur = String(v["当前地点"] || "loc_dorm_302");
+  document.getElementById("map-current").textContent = LOCATION_NAMES[cur] || cur;
+  const floorsEl = document.getElementById("map-floors");
+  floorsEl.innerHTML = "";
+  FLOORS.forEach(floor => {
+    const row = document.createElement("div");
+    row.className = "map-floor";
+    let html = '<div class="floor-label">' + floor.label + '</div><div class="rooms">';
+    floor.rooms.forEach(room => {
+      const aliases = room.aliases || [];
+      const isCur = room.id === cur || aliases.includes(cur);
+      const visited = isCur || (room.visitedVar ? !!v[room.visitedVar] : false)
+        || room.id === "loc_dorm_302"; // 起点永远已访
+      let cls = "map-room";
+      if (isCur) cls += " current";
+      else if (visited) cls += " visited";
+      html += '<span class="' + cls + '">' + escapeHTML(room.label) + '</span>';
+    });
+    html += '</div>';
+    row.innerHTML = html;
+    floorsEl.appendChild(row);
+  });
+}
+
 function renderAchievementsTab() {
   const data = loadAchievements();
   const ids = Object.keys(ACHIEVEMENTS);
@@ -1450,6 +1738,8 @@ function renderAchievementsTab() {
 function openPanel() {
   renderPanel();
   renderLog();
+  renderCluesTab();
+  renderMapTab();
   renderAchievementsTab();
   sheet.classList.add("open");
   scrim.classList.add("open");
@@ -1461,15 +1751,18 @@ function closePanel() {
 document.getElementById("open-panel").onclick = openPanel;
 scrim.onclick = closePanel;
 
+const ALL_TABS = ["stats", "log", "comp", "ach", "clues", "map"];
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     const target = btn.dataset.tab;
-    ["stats", "log", "comp", "ach"].forEach(t => {
+    ALL_TABS.forEach(t => {
       document.getElementById("tab-" + t).classList.toggle("hidden", target !== t);
     });
     if (target === "ach") renderAchievementsTab();
+    if (target === "clues") renderCluesTab();
+    if (target === "map") renderMapTab();
   };
 });
 document.addEventListener("keydown", e => {
