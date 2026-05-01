@@ -242,6 +242,14 @@ ink 源码上游在 `trpg-bot/worlds/modules/kongjiang-isolation/ink_demo/`，de
 
 其他 phase 都是 demo 仓库纯前端改动，无需同步上游。
 
+## EN 版本同步（推迟）
+
+`en/index.html` 是 Act 0 简化 demo（806 行 vs 主版 1500+），没有标题页 / 存档系统 / 多章结构。
+
+Phase 1 的特性（跨幕续游、章节选择、章节解锁）依赖多 Act 架构，对单 Act 的 EN demo 没有意义。
+
+**决定**：Phase 1-4 暂不同步 EN 版。后续如需国际化发布，单开一个「EN 版完整重写」spec。
+
 ---
 
 ## 测试策略

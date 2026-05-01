@@ -92,9 +92,88 @@ body {
   font-size: 13px; color: var(--dim);
   margin-top: 4px;
 }
-.title-screen .acts button.disabled {
-  opacity: 0.5; cursor: not-allowed;
+.title-screen .acts button.disabled,
+.title-screen .acts button:disabled {
+  opacity: 0.4; cursor: not-allowed;
 }
+.title-screen .acts button:disabled:hover { background: var(--panel); border-color: var(--border); }
+.title-screen .acts button.primary { letter-spacing: 0.04em; }
+
+/* ============ Chapter Select Modal ============ */
+.modal-scrim {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px env(safe-area-inset-right) 16px env(safe-area-inset-left);
+  padding-top: calc(env(safe-area-inset-top) + 16px);
+  padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
+}
+.modal-scrim[hidden] { display: none; }
+.modal-card {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: 100%; max-width: 420px;
+  max-height: 100%;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.modal-header {
+  flex: 0 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 16px; letter-spacing: 0.1em;
+}
+.modal-close {
+  appearance: none; background: transparent; border: none;
+  color: var(--dim); font-size: 18px; cursor: pointer;
+  padding: 4px 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+.modal-close:hover { color: var(--fg); }
+.modal-body {
+  flex: 1 1 auto; min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px 18px 8px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.modal-footer {
+  flex: 0 0 auto;
+  padding: 8px 18px 14px;
+  font-size: 11px;
+  color: var(--dim2);
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+.chapter-item {
+  appearance: none;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.chapter-item:hover, .chapter-item:active {
+  background: var(--panel-hover); border-color: var(--accent);
+}
+.chapter-item:disabled {
+  opacity: 0.45; cursor: not-allowed;
+}
+.chapter-item:disabled:hover { background: var(--panel); border-color: var(--border); }
+.chapter-item .meta { font-size: 12px; color: var(--dim); }
+.chapter-item.done { border-color: var(--gold, #c9a96e); }
+.chapter-item.done::before { content: "✓ "; color: var(--gold, #c9a96e); }
+.chapter-item.locked .meta { color: var(--accent); }
 .title-screen .extras {
   margin-top: 32px;
   display: flex; flex-direction: column; gap: 14px;
@@ -579,17 +658,17 @@ nav#choices .restart, nav#choices .next-act {
   <h1>控江往事</h1>
   <p class="subtitle">静默深渊</p>
   <div class="acts">
-    <button data-act="0">
-      序章 · 静默之夜
-      <span class="meta">第一夜 · 30 分钟 · 已完成</span>
+    <button class="primary" id="btn-new-game">
+      ▶ 开始
+      <span class="meta">从序章开始新游戏</span>
     </button>
-    <button data-act="1">
-      Act 1 · 困笼
-      <span class="meta">第二天早晨 · 90 分钟 · 3F/4F 探索</span>
+    <button class="primary" id="btn-continue" disabled>
+      ▶ 继续
+      <span class="meta" id="continue-meta">无存档</span>
     </button>
-    <button id="continue-saved" hidden>
-      📂 继续上次进度
-      <span class="meta" id="continue-meta"></span>
+    <button class="primary" id="btn-chapter-select">
+      ▶ 章节选择
+      <span class="meta" id="chapter-meta">已通关 0 / 4 幕</span>
     </button>
   </div>
   <div class="extras">
@@ -605,7 +684,19 @@ nav#choices .restart, nav#choices .next-act {
   <div class="langs">
     <a href="en/index.html">English</a>
   </div>
-  <div style="margin-top:24px;font-size:10px;color:#444;letter-spacing:0.2em;text-align:center;">BUILD 2026-05-02-A</div>
+  <div style="margin-top:24px;font-size:10px;color:#444;letter-spacing:0.2em;text-align:center;" id="build-tag">BUILD 2026-05-02-B</div>
+</div>
+
+<!-- Chapter Select Modal -->
+<div class="modal-scrim" id="chapter-modal" hidden>
+  <div class="modal-card">
+    <div class="modal-header">
+      <span>章节选择</span>
+      <button class="modal-close" id="chapter-close" aria-label="关闭">✕</button>
+    </div>
+    <div class="modal-body" id="chapter-list"></div>
+    <div class="modal-footer" id="chapter-footer"></div>
+  </div>
 </div>
 
 <!-- ============ Game ============ -->
@@ -807,6 +898,18 @@ let pendingRoll = null;
 const rollLog = [];
 const SAVE_KEY = "kongjiang_save";
 const ACH_KEY = "kongjiang_achievements";
+const CHAPTER_KEY = "kongjiang_chapter_progress";
+const SAVE_SCHEMA_VERSION = 2;
+
+const ACTS_META = [
+  { id: 0, title: "序章 · 静默之夜", meta: "第一夜 · 30 分钟 · 302 寝室" },
+  { id: 1, title: "Act 1 · 困笼", meta: "第二天早晨 · 90 分钟 · 3F/4F 探索" },
+  { id: 2, title: "Act 2 · 探窟", meta: "第二天午后 · 90 分钟 · 1F/2F 探索 · 嘴炮抉择" },
+  { id: 3, title: "Act 3 · 破局", meta: "第二夜 · 120 分钟 · 三路径 · 7 结局" },
+];
+
+// Last seen scene tag, used to detect knot/scene boundaries for checkpoints
+let lastSavedScene = null;
 
 // ============================================================
 // localStorage helpers
@@ -815,12 +918,53 @@ function loadSave() {
   try { return JSON.parse(localStorage.getItem(SAVE_KEY)); } catch { return null; }
 }
 function setSave(data) { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); }
-function clearSave() { localStorage.removeItem(SAVE_KEY); }
+function clearSave() {
+  localStorage.removeItem(SAVE_KEY);
+  lastSavedScene = null;
+}
 function loadAchievements() {
   try { return JSON.parse(localStorage.getItem(ACH_KEY)) || { unlocked: {} }; }
   catch { return { unlocked: {} }; }
 }
 function saveAchievements(d) { localStorage.setItem(ACH_KEY, JSON.stringify(d)); }
+function loadChapterProgress() {
+  try {
+    const p = JSON.parse(localStorage.getItem(CHAPTER_KEY));
+    return p || { 0: "none", 1: "none", 2: "none", 3: "none" };
+  } catch { return { 0: "none", 1: "none", 2: "none", 3: "none" }; }
+}
+function saveChapterProgress(p) { localStorage.setItem(CHAPTER_KEY, JSON.stringify(p)); }
+function markChapterDone(act) {
+  const p = loadChapterProgress();
+  if (p[act] !== "done") {
+    p[act] = "done";
+    saveChapterProgress(p);
+  }
+}
+function isDevMode() {
+  return new URLSearchParams(location.search).get("dev") === "1";
+}
+function isChapterUnlocked(act) {
+  if (isDevMode()) return true;
+  if (act === 0) return true;
+  return loadChapterProgress()[act - 1] === "done";
+}
+
+// Write a v2 checkpoint of current ink state at scene boundary
+function saveCheckpoint(sceneLabel) {
+  if (!story) return;
+  try {
+    const data = {
+      v: SAVE_SCHEMA_VERSION,
+      act: currentAct,
+      knot: story.state.currentPathString || "",
+      state_json: story.state.ToJson(),
+      ts: Date.now(),
+      scene_label: sceneLabel || "",
+    };
+    setSave(data);
+  } catch (e) { console.warn("saveCheckpoint failed:", e); }
+}
 
 // ============================================================
 // Render helpers
@@ -856,6 +1000,12 @@ function renderHUD() {
   if (sheet.classList.contains("open")) renderPanel();
   // Auto achievement detection
   detectAchievements();
+  // Chapter completion detection — fires once per Act when its 结束 var flips
+  if (v["Act1结束"] && currentAct === 1) markChapterDone(1);
+  if (v["Act2结束"] && currentAct === 2) markChapterDone(2);
+  if (v["Act3结束"] && currentAct === 3) markChapterDone(3);
+  // Act 0 completion: 战斗结局 set means the prologue ran through the cut-in
+  if (v["战斗结局"] && currentAct === 0) markChapterDone(0);
 }
 
 function renderEcology(n) {
@@ -1038,6 +1188,8 @@ function continueStory() {
     if (scene && scene !== lastScene) {
       appendParagraph("〔" + (SCENE_LABELS[scene] || scene) + "〕", "scene");
       lastScene = scene;
+      // Track current scene label so the choice-time checkpoint can use it
+      if (scene !== lastSavedScene) lastSavedScene = scene;
     }
     if (speaker && speaker !== lastSpeaker) {
       appendParagraph(SPEAKER_LABELS[speaker] || speaker, "speaker");
@@ -1084,36 +1236,51 @@ function renderChoices() {
     };
     choicesEl.appendChild(btn);
   });
+  // Checkpoint at every stable choice point (state ready to be picked)
+  saveCheckpoint(SCENE_LABELS[lastSavedScene] || lastSavedScene || "");
 }
 
 function onStoryEnd() {
-  // Save state for cross-act transfer
   const v = story.variablesState;
+  // Mark current act as done (HUD detector also catches this, but ensure)
+  if (currentAct === 0 && v["战斗结局"]) markChapterDone(0);
+  if (currentAct === 1 && v["Act1结束"]) markChapterDone(1);
+  if (currentAct === 2 && v["Act2结束"]) markChapterDone(2);
+  if (currentAct === 3 && (v["Act3结束"] || v["最终结局"])) markChapterDone(3);
+
+  // Snapshot transfer vars + state to seed the next act's run
+  // (Cross-act resume uses a separate save under the next act)
   const vars = {};
   TRANSFER_VARS.forEach(k => { try { vars[k] = v[k]; } catch {} });
 
-  // Decide what to offer
-  const canContinue = (currentAct === 0); // After Act 0, offer Act 1
-  if (canContinue) {
-    setSave({ act: 1, fromAct: 0, vars, ts: Date.now() });
+  if (currentAct < 3) {
+    const nextAct = currentAct + 1;
+    // Write a "ready to start next act" save: when player picks Continue,
+    // we'll load act{N+1}.json and inject these vars.
+    setSave({
+      v: 1,            // legacy-style cross-act transfer; act{N+1} starts from top
+      act: nextAct,
+      fromAct: currentAct,
+      vars,
+      ts: Date.now(),
+      scene_label: `Act ${nextAct} 起点`,
+    });
     const btn = document.createElement("button");
     btn.className = "next-act";
-    btn.textContent = "进入 Act 1「困笼」";
-    btn.onclick = () => location.href = "?act=1&continue=1";
+    const titles = ["序章", "Act 1「困笼」", "Act 2「探窟」", "Act 3「破局」"];
+    btn.textContent = "进入 " + titles[nextAct];
+    const params = new URLSearchParams();
+    params.set("act", String(nextAct));
+    params.set("continue", "1");
+    if (isDevMode()) params.set("dev", "1");
+    btn.onclick = () => location.href = "?" + params.toString();
     choicesEl.appendChild(btn);
   }
-  if (currentAct === 1 && story.variablesState["Act1结束"]) {
-    const note = document.createElement("button");
-    note.className = "next-act";
-    note.textContent = "Act 2 即将到来…";
-    note.disabled = true;
-    note.style.opacity = 0.6;
-    choicesEl.appendChild(note);
-  }
+
   const restart = document.createElement("button");
   restart.className = "restart";
   restart.textContent = "返回主菜单";
-  restart.onclick = () => { clearSave(); location.href = "."; };
+  restart.onclick = () => { location.href = "."; };
   choicesEl.appendChild(restart);
 }
 
@@ -1320,28 +1487,102 @@ function refreshTitleScreen() {
   document.getElementById("ach-count").textContent = unlocked;
   document.getElementById("ach-total").textContent = total;
 
-  // Continue saved
+  // Continue button state
   const save = loadSave();
-  const cont = document.getElementById("continue-saved");
-  if (save && save.act === 1) {
-    cont.removeAttribute("hidden");
-    document.getElementById("continue-meta").textContent =
-      "Act " + save.act + " · " + new Date(save.ts).toLocaleString("zh-CN");
-    cont.onclick = () => location.href = "?act=" + save.act + "&continue=1";
+  const contBtn = document.getElementById("btn-continue");
+  const contMeta = document.getElementById("continue-meta");
+  if (save && save.v === SAVE_SCHEMA_VERSION) {
+    contBtn.disabled = false;
+    const date = new Date(save.ts).toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
+    contMeta.textContent = `Act ${save.act}${save.scene_label ? " · " + save.scene_label : ""} · ${date}`;
+  } else if (save && save.act === 1 && save.fromAct === 0) {
+    // Legacy v1 save: from Act 0 → Act 1 transition only
+    contBtn.disabled = false;
+    contMeta.textContent = `Act 1 (旧版存档)`;
+  } else {
+    contBtn.disabled = true;
+    contMeta.textContent = "无存档";
   }
-}
-refreshTitleScreen();
 
-document.querySelectorAll(".acts button[data-act]").forEach(btn => {
-  btn.onclick = () => {
-    const act = parseInt(btn.dataset.act, 10);
-    const seedInput = document.getElementById("seed-input").value;
-    const params = new URLSearchParams();
-    params.set("act", act);
-    if (seedInput) params.set("seed", seedInput);
-    location.href = "?" + params.toString();
-  };
+  // Chapter completion count
+  const cp = loadChapterProgress();
+  const done = ACTS_META.filter(a => cp[a.id] === "done").length;
+  const chapterMeta = document.getElementById("chapter-meta");
+  if (isDevMode()) chapterMeta.textContent = `已通关 ${done} / 4 幕  ·  DEV MODE`;
+  else chapterMeta.textContent = `已通关 ${done} / 4 幕`;
+}
+
+function startNewGame() {
+  if (loadSave()) {
+    if (!confirm("发现已有存档。开始新游戏会清空当前进度，确定继续？")) return;
+  }
+  clearSave();
+  const seedInput = document.getElementById("seed-input").value;
+  const params = new URLSearchParams();
+  params.set("act", "0");
+  if (seedInput) params.set("seed", seedInput);
+  if (isDevMode()) params.set("dev", "1");
+  location.href = "?" + params.toString();
+}
+
+function continueGame() {
+  const save = loadSave();
+  if (!save) return;
+  // Legacy v1 save: jump to act + inject vars (best effort)
+  // v2 save: jump to act with continue=1, startGame will LoadJson the state
+  const params = new URLSearchParams();
+  params.set("act", save.act);
+  params.set("continue", "1");
+  if (isDevMode()) params.set("dev", "1");
+  location.href = "?" + params.toString();
+}
+
+function openChapterSelect() {
+  const modal = document.getElementById("chapter-modal");
+  const list = document.getElementById("chapter-list");
+  const footer = document.getElementById("chapter-footer");
+  list.innerHTML = "";
+  const cp = loadChapterProgress();
+  ACTS_META.forEach(a => {
+    const unlocked = isChapterUnlocked(a.id);
+    const done = cp[a.id] === "done";
+    const btn = document.createElement("button");
+    btn.className = "chapter-item" + (done ? " done" : "") + (!unlocked ? " locked" : "");
+    btn.disabled = !unlocked;
+    let metaText = a.meta;
+    if (!unlocked) metaText = `🔒 通关 Act ${a.id - 1} 后解锁`;
+    else if (done) metaText = a.meta + "  ·  ✓ 已通关";
+    btn.innerHTML =
+      '<span>' + escapeHTML(a.title) + '</span>' +
+      '<span class="meta">' + escapeHTML(metaText) + '</span>';
+    btn.onclick = () => {
+      if (loadSave() && !confirm(`从 ${a.title} 重新开始会清空当前存档，确定？`)) return;
+      clearSave();
+      const seedInput = document.getElementById("seed-input").value;
+      const params = new URLSearchParams();
+      params.set("act", String(a.id));
+      if (seedInput) params.set("seed", seedInput);
+      if (isDevMode()) params.set("dev", "1");
+      location.href = "?" + params.toString();
+    };
+    list.appendChild(btn);
+  });
+  footer.textContent = isDevMode() ? "DEV MODE · 全部章节解锁" : "通关一幕解锁下一幕";
+  modal.hidden = false;
+}
+function closeChapterSelect() {
+  document.getElementById("chapter-modal").hidden = true;
+}
+
+document.getElementById("btn-new-game").onclick = startNewGame;
+document.getElementById("btn-continue").onclick = continueGame;
+document.getElementById("btn-chapter-select").onclick = openChapterSelect;
+document.getElementById("chapter-close").onclick = closeChapterSelect;
+document.getElementById("chapter-modal").addEventListener("click", e => {
+  if (e.target.id === "chapter-modal") closeChapterSelect();
 });
+
+refreshTitleScreen();
 
 document.getElementById("show-achievements").onclick = () => {
   // Open game shell view briefly to show achievements panel
@@ -1373,19 +1614,37 @@ async function startGame(act, seedOverride, continueFromSave) {
       try { story.variablesState["seed"] = parseInt(seedOverride, 10); } catch {}
     }
 
+    titleScreen.classList.add("hidden");
+    gameEl.classList.remove("hidden");
+
     // Continue from saved state
+    let resumedFromCheckpoint = false;
     if (continueFromSave) {
       const save = loadSave();
-      if (save && save.vars) {
+      if (save && save.v === SAVE_SCHEMA_VERSION && save.act === act && save.state_json) {
+        // v2: full state restore — story is now waiting at choices, no Continue() needed
+        try {
+          story.state.LoadJson(save.state_json);
+          resumedFromCheckpoint = true;
+          lastSavedScene = null; // force re-checkpoint on next scene change
+        } catch (e) {
+          console.warn("LoadJson failed, falling back to legacy:", e);
+        }
+      } else if (save && save.vars) {
+        // v1 legacy: inject loose vars only
         for (const [k, val] of Object.entries(save.vars)) {
           try { story.variablesState[k] = val; } catch {}
         }
       }
     }
 
-    titleScreen.classList.add("hidden");
-    gameEl.classList.remove("hidden");
-    continueStory();
+    if (resumedFromCheckpoint) {
+      // State already at choice point. Skip Continue, render immediately.
+      renderHUD();
+      renderChoices();
+    } else {
+      continueStory();
+    }
   } catch (e) {
     titleScreen.classList.remove("hidden");
     showError("加载失败：" + e.message);
