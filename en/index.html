@@ -27,13 +27,20 @@ html, body {
   font-size: 17px;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
-  overscroll-behavior: none;
 }
+html { height: 100%; overscroll-behavior: none; }
 body {
-  min-height: 100vh; min-height: 100dvh;
+  height: 100%;
+  overflow: hidden;
   display: flex; flex-direction: column;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
+#game {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex; flex-direction: column;
+}
+#game.hidden { display: none; }
 
 header.hud {
   flex: 0 0 auto;
@@ -112,10 +119,18 @@ header.hud {
 }
 
 main {
-  flex: 1 1 auto;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   padding: 18px 18px 8px;
   max-width: 720px; width: 100%;
   margin: 0 auto;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 #story p {
   margin: 0 0 1em 0;
@@ -170,7 +185,12 @@ main {
 }
 
 nav#choices {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  max-height: 50%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   padding: 12px 18px calc(env(safe-area-inset-bottom) + 16px);
   max-width: 720px; width: 100%;
   margin: 0 auto;
@@ -359,7 +379,7 @@ nav#choices .restart {
   <span class="stat">Zhiyong <b id="fear-zy">—</b></span>
   <span class="stat">Zhangyi <b id="fear-zy2">—</b></span>
   <span class="stat">Round <b id="rounds">0</b></span>
-  <a class="lang" href="../">中</a>
+  <a class="lang" href="../index.html">中</a>
 </header>
 
 <main id="story" aria-live="polite"></main>

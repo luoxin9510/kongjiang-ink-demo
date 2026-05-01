@@ -31,11 +31,17 @@ html, body {
 }
 html { height: 100%; overscroll-behavior: none; }
 body {
-  height: 100vh; height: 100dvh;
+  height: 100%;
   overflow: hidden;
   display: flex; flex-direction: column;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
+#game {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex; flex-direction: column;
+}
+#game.hidden { display: none; }
 
 /* ============ Title screen ============ */
 .title-screen {
@@ -254,7 +260,6 @@ header.hud {
 main {
   flex: 1 1 0;
   min-height: 0;
-  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
@@ -587,7 +592,7 @@ nav#choices .restart, nav#choices .next-act {
     <button class="ach-link" id="show-achievements">🏆 成就总览（<b id="ach-count">0</b> / <b id="ach-total">0</b>）</button>
   </div>
   <div class="langs">
-    <a href="en/">English</a>
+    <a href="en/index.html">English</a>
   </div>
 </div>
 
@@ -605,7 +610,7 @@ nav#choices .restart, nav#choices .next-act {
     <span class="stat" id="loc-stat" hidden>📍 <b id="location-name">—</b></span>
     <span class="stat ecology-stat" id="ecology-stat" hidden>生态 <span class="ecology-bar" id="ecology-bar"></span></span>
     <span class="stat">回合 <b id="rounds">0</b></span>
-    <a class="lang" href="en/">EN</a>
+    <a class="lang" href="en/index.html">EN</a>
   </header>
 
   <main id="story" aria-live="polite"></main>
