@@ -154,7 +154,6 @@ VAR H6_触发 = false
 VAR 队友存活_志勇 = true
 VAR 队友存活_砚波 = true
 VAR 队友存活_张怡 = true
-VAR 队友存活_昕 = true
 
 // Act 3 场景已访
 VAR 5F走廊_已访 = false
