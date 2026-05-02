@@ -27,7 +27,7 @@ INCLUDE act2_scenes.ink
     ~ 锚点B_id = "npc_zhangbaoxing"
 }
 
-// HTML 端可在故事启动前注入 Act 1 末状态（vars: 理智_昕/HP_昕/恐惧_志勇张怡/信任_志勇张怡/seed/...）
+// HTML 端可在故事启动前注入 Act 1 末状态（vars: 理智_PC/HP_PC/恐惧_志勇张怡/信任_志勇张怡/seed/...）
 
 -> a2_序幕
 
