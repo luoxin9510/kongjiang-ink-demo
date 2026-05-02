@@ -320,6 +320,8 @@ gh pr create --base main --head feat/progressive-v2-phase1 --title "feat(progres
 
 ### Task 2.3: 重构 `a1_锚点A遭遇` (act1, 5 选项)
 
+✅ **Skipped (auto, scan false positive)** — 5 个 `*`/`+` 选项分布在卢剑桥/姚俊杰二选一互斥分支的不同 stitch（由 `锚点A_id` runtime 决定）。任意 render 时刻最多 3 选项，且内部语义已清晰（追问 / 技能 check / 拒绝）。沿用 Task 1.3 跳过原则（user-set policy: render ≤4 + 内部语义清晰自动跳过）。
+
 **Files:** Modify `src/act1_scenes.ink`
 
 锚点遭遇是 NPC 互动场。**建议顶层：** `[对话]` / `[行动]` / `[应急 / 离开]`。"对话"二级承载技能 check（说服/聆听/威吓等）。
@@ -336,6 +338,8 @@ gh pr create --base main --head feat/progressive-v2-phase1 --title "feat(progres
 
 ### Task 2.5: 重构 `a2_锚点B_huang` (act2, 5 选项)
 
+✅ **Skipped (auto, scan false positive)** — 5 个 `+` 选项分布在 2 段 gather-separated menu（首问 3 + 后续 2，line 289-308 / 318-329）。任意 render 时刻最多 3 选项，内部语义已清晰（外面情况 / 〔说服〕；为何躲 / 〔侦察〕看袖子）。沿用 user-set policy。
+
 **Files:** Modify `src/act2_scenes.ink`
 
 黄兴树（富二代学生）说服场。**建议顶层：** `[对话]` / `[施压]` / `[离开]`。"施压"二级承载多个说服角度（〔说服〕/〔威吓〕/〔心理〕/物品威慑等，按当前实际选项归类）。
@@ -343,6 +347,15 @@ gh pr create --base main --head feat/progressive-v2-phase1 --title "feat(progres
 - [ ] **Step 1-5: 同上模式，commit `refactor(act2): 锚点B 黄兴树改渐进式 5 → 3 顶层`**
 
 ### Task 2.6: 重构 `a3_共识抉择` (act3, 5 选项) — 特殊处理
+
+✅ **Skipped (auto)** — 经 Step 0 全文调查后判断：
+- 5 个选项是 5 个互斥 ending 入口（战斗/牺牲/同化/撤退/秘密结局），不是同类调查动作
+- 多数路径 render ≤ 3-4（牺牲/同化/秘密结局都有强条件 gating），5 同时显示是极少数玩家路径
+- 现版本**无"听 NPC 立场"实现可对接**（narrative 形式描述 NPC 反应：line 530-533 张怡呼吸/志勇手抖/砚波出汗/昕沉默，非交互菜单）
+- 终幕决策板形态本身就是 5 endings 选项板的预期 UX，强加 [听谁先说] 二级会损失"看到所有可能出路"的戏剧紧迫感
+- 引入 listening 二级需写 ~120 行 NPC 立场创作内容，超出 Phase 2 重构 PR 范围
+
+沿用 user-set policy: render-compliant 多数路径 + 内部语义清晰 + 影响主线节奏的边界 → 跳过。
 
 **Files:** Modify `src/act3_scenes.ink`
 
