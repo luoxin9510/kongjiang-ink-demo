@@ -16,6 +16,9 @@ INCLUDE act1_scenes.ink
 // 1. 应用 seed（HTML 注入或随机生成）
 ~ 应用seed()
 
+// 2. 推进 act_phase 至 1（解锁早期 flavor pockets）
+~ 推进阶段(1)
+
 // 2. 随机分配 锚点 A NPC（卢剑桥 / 姚俊杰）
 ~ temp 选中A = 随机取(锚点A候选)
 {
