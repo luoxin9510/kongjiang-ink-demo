@@ -12,11 +12,25 @@ LIST 队友状态 = 平静, 紧张, 恐惧
 LIST 觉知链 = 一切如常, 隐约不安, 闻到甜腥, 第一次敲门, 第二次敲门, 门外有东西
 LIST 伏笔档 = 无伏笔, 一档伏笔, 二档伏笔, 三档伏笔
 
-// PC 罗昕（昕）
-VAR 理智_昕 = 64
-VAR HP_昕 = 12
+// PC 罗昕（昕）= 默认 PC（多 PC 架构）
+LIST PC列表 = 昕, 砚波, 志勇, 张怡
+VAR 当前PC = (昕)
+VAR 理智_PC = 64
+VAR HP_PC = 12
+VAR 队友存活_PC = true
+VAR 当前PC名 = "罗昕"
+VAR 当前PC昵称 = "昕"
 
-// 队友 fear / trust（0–100）
+// 4 角色关系 var（同 _data.ink；补充缺失的昕/砚波）
+VAR 信任_昕 = 0
+VAR 信任_砚波 = 0
+VAR 恐惧_昕 = 0
+VAR 恐惧_砚波 = 0
+VAR 状态_昕 = (平静)
+VAR 状态_砚波 = (平静)
+VAR 陪伴_昕 = false
+
+// 队友 fear / trust（0–100）— Act0 必需（不 INCLUDE _data.ink）
 VAR 恐惧_志勇 = 20
 VAR 恐惧_张怡 = 25
 VAR 信任_志勇 = 60
@@ -50,9 +64,6 @@ VAR 战斗结局 = 0   // 1=击退 2=超时 3=倒地 4=逃脱
 
 // === 渐进式 v2 / flavor 系统（Act0 局部声明，与 _data.ink 跨 Act 共享变量同义）===
 VAR act_phase = 0
-VAR 陪伴_志勇 = false
-VAR 陪伴_张怡 = false
-VAR 陪伴_砚波 = false
 
 INCLUDE _helpers.ink
 

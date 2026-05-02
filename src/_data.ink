@@ -15,10 +15,6 @@ LIST Act1场景 = loc_dorm_302, loc_corridor_3f, loc_dorm_neighbor, loc_shower_3
 // 物品（背包系统）
 LIST 物品 = 主厨刀, 辣椒面, 急救包, 绷带, 防疫手册, 数学草稿本, 宿管钥匙
 
-// === PC 状态（罗昕）===
-VAR 理智_昕 = 64
-VAR HP_昕 = 12
-
 // === 队友 fear / trust ===
 VAR 恐惧_志勇 = 20
 VAR 恐惧_张怡 = 25
@@ -176,3 +172,25 @@ VAR act_phase = 0   // 0=Act0, 1=Act1, 2=Act2, 3=喘息夜2及之后
 VAR 陪伴_志勇 = false
 VAR 陪伴_张怡 = false
 VAR 陪伴_砚波 = false
+
+// === 多 PC 系统（spec §2.1）===
+LIST PC列表 = 昕, 砚波, 志勇, 张怡
+VAR 当前PC = (昕)
+
+// 通用 PC stats（替代原 理智_昕 / HP_昕）
+VAR 理智_PC = 64
+VAR HP_PC = 12
+VAR 队友存活_PC = true
+
+// PC 名字字符串（NPC 喊话 / 选项文案动态化用）
+VAR 当前PC名 = "罗昕"
+VAR 当前PC昵称 = "昕"
+
+// 4 角色关系 var（补充缺失的昕/砚波；志勇/张怡的已在 line 19-26 声明）
+VAR 信任_昕 = 0
+VAR 信任_砚波 = 0
+VAR 恐惧_昕 = 0
+VAR 恐惧_砚波 = 0
+VAR 状态_昕 = (平静)
+VAR 状态_砚波 = (平静)
+VAR 陪伴_昕 = false
