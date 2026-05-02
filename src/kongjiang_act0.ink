@@ -69,6 +69,9 @@ INCLUDE _helpers.ink
 
 ~ SEED_RANDOM(2026)
 
+// TEMP: ink-only 烟测用,PR 8 HTML 实现时移除
+~ 初始化PC(当前PC)
+
 -> 序章入口
 
 
