@@ -1,8 +1,21 @@
 # 渐进式选择 + 内容扩充实施 Plan
 
+> ⚠️ **2026-05-02 修订（Y 路线 PC 命名清理）**
+>
+> 在 Phase 3 实施过程中发现 PC 命名 bug：剧本里把 PC 罗昕（昕）当 NPC 互动（对话_昕 / 安抚昕 等）。用户决定走 Y 路线清理，4 室友 = PC 昕 + 3 NPC（砚波/志勇/张怡）。
+>
+> **影响 plan 的 task：**
+> - Task 3.1（昕 早+中 flavor）→ ❌ **删除**（PC 不能跟自己 flavor）
+> - Task 4.4（喘息夜 2 4 套深聊）→ 改 3 套（删除深聊_昕）
+> - Task 4.5（boss 阶段 2 支援 4 个）→ 改 3 个（删除支援_昕、陪伴_昕）
+> - Phase 1+2 中 [对话_昕]/[找人说话→昕] 已通过 refactor/y-pc-cleanup 分支回滚清理
+>
+> **未来多 PC 路线的 future-work 提醒：**
+> 用户已确认其他 3 室友（砚波/志勇/张怡）也将作为可选 PC。届时 `恐惧_志勇/张怡 / 信任_志勇/张怡 / 状态_志勇/张怡` 在某 PC 视角下也变 PC 自身状态。Phase B（多 PC 重构 brainstorm）需重新设计：要么改成"`关系_<观察者>_<被观察者>`"双 PC 矩阵，要么 dynamic var 由 runtime 解析。本 plan 不实施。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 落地 spec [`2026-05-02-progressive-choice-and-flavor-design.md`](../specs/2026-05-02-progressive-choice-and-flavor-design.md)：对 9 个高密度选项场景做渐进式收敛、新增 NPC flavor pockets（早 + 中 + 晚 12 段）与 2 个桥接喘息夜。
+**Goal:** 落地 spec [`2026-05-02-progressive-choice-and-flavor-design.md`](../specs/2026-05-02-progressive-choice-and-flavor-design.md)：对 9 个高密度选项场景做渐进式收敛、新增 NPC flavor pockets（早 + 中 + 晚 9 段，3 NPC × 3 phase）与 2 个桥接喘息夜。
 
 **Architecture:** 4 个独立可合并的 PR：(1) 基础设施 + Act0 三场景重构；(2) Act1+2+3 剩余 6 场景重构；(3) NPC 早/中期 flavor pockets；(4) 喘息夜 1+2 + boss 支援接线。每个 PR 独立编译通过、可玩通关。
 
@@ -434,6 +447,10 @@ gh pr create --base main --head feat/progressive-v2-phase1 --title "feat(progres
 
 ### Task 3.1: 嵌入 `对话_昕` 子话题
 
+❌ **DELETED (Y 路线)** — 昕 是 PC（罗昕），不是 NPC。PC 不能跟自己 flavor 对话。本 task 整体废弃。
+PC 内心戏（高三压力 / 厨师梦）由现有 SAN 系统（`理智_昕` 消耗 + `# state:san_xin` tag）和场景叙述自然承担。
+原 `=== 对话_昕 ===` / `=== a1_对话_昕 ===` 已在 refactor/y-pc-cleanup branch 删除。Phase 3 实际只覆盖 3 NPC（Task 3.2/3.3/3.4）。
+
 **Files:** Modify `src/act1_scenes.ink`（或 `_helpers.ink` / 其他承载该 knot 的文件 — 先 grep 定位）
 
 - [ ] **Step 1: `Grep "=== 对话_昕"` 定位文件与行号**
@@ -669,17 +686,13 @@ TODO  // 在 Task 4.3-4.4 填充
   -> 第二轮选谁
 ```
 
-- [ ] **Step 1: 写 `深聊_昕`（~70 行）**
+❌ **Step 1 (深聊_昕) DELETED (Y 路线)** — 昕 是 PC，不深聊自己。喘息夜 2 改为 3 套深聊（志勇/张怡/砚波）。
 
-主题：最害怕的事 · 独自一个人。
-关键画面：高一被锁宿舍的回忆，至今怕黑。
-情绪频道：崩溃边缘、依赖性强、需要被认证"我没事"。
-
-⚠️ **黑名单约束（spec §5）适用于所有 4 段深聊：**
-- ❌ 禁止主题"童年阴影" —— 高一被锁是**少年期**事件（高中阶段），可写；勿溯及童年（小学以前）
+⚠️ **黑名单约束（spec §5）适用于剩余 3 段深聊：**
+- ❌ 禁止主题"童年阴影" —— 勿溯及童年（小学以前）
 - ❌ 禁止载体"家信 / 写信" —— 家庭主题用电话片段记忆、看到合照、做梦、放假回家场景等替代
 
-- [ ] **Step 2: 写 `深聊_志勇`（~70 行）**
+- [ ] **Step 1: 写 `深聊_志勇`（~70 行）**
 
 主题：和家人的关系。
 载体：电话片段记忆 / 看到他爸送他来学校时的场景（**不写信**）。
@@ -757,7 +770,6 @@ TODO  // 在 Task 4.3-4.4 填充
 + [基础选项 1] -> ...
 + [基础选项 2] -> ...
 // 4 个条件支援
-+ {陪伴_昕} 昕替你挡了一下 -> 支援_昕
 + {陪伴_志勇} 志勇主动挡刀 -> 支援_志勇
 + {陪伴_张怡} 张怡冷静递来 X -> 支援_张怡
 + {陪伴_砚波} 砚波从背后撞过来 -> 支援_砚波
@@ -778,7 +790,6 @@ TODO  // 在 Task 4.3-4.4 填充
 
 = 支援菜单
   谁在身边？
-  + {陪伴_昕} 让昕替你挡 -> 支援_昕
   + {陪伴_志勇} 让志勇上 -> 支援_志勇
   + {陪伴_张怡} 让张怡递东西 -> 支援_张怡
   + {陪伴_砚波} 让砚波撞上去 -> 支援_砚波
