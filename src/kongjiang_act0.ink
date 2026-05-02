@@ -69,7 +69,7 @@ INCLUDE _helpers.ink
 
 ~ SEED_RANDOM(2026)
 
-// TEMP: ink-only 烟测用,PR 8 HTML 实现时移除
+// HTML 在 startGame 中通过 ?pc= URL 参数注入 当前PC LIST var,此处读取并初始化 PC 字段
 ~ 初始化PC(当前PC)
 
 -> 序章入口
