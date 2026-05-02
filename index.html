@@ -829,7 +829,7 @@ nav#choices .restart, nav#choices .next-act {
     <button class="tab-btn" data-tab="ach">成就</button>
   </div>
   <div class="tab-content" id="tab-stats">
-    <h2 id="pc-name">罗昕</h2>
+    <h2 id="pc-name">罗昕 · 昕</h2>
     <p class="char-meta" id="pc-meta">高三学生（吃货/社交核心） · 17 岁 · 男</p>
 
     <h3>属性</h3>
@@ -877,7 +877,7 @@ nav#choices .restart, nav#choices .next-act {
 // Static data
 // ============================================================
 const PC_DATA = {
-  fullname: "罗昕",
+  fullname: "罗昕", name: "昕",
   occupation: "高三学生（吃货/社交核心）",
   age: 17, gender: "男",
   stats: { STR: 65, CON: 55, SIZ: 65, DEX: 70, APP: 65, INT: 65, POW: 70, EDU: 55, LUK: 75 },
@@ -1474,7 +1474,7 @@ function onStoryEnd() {
 // Panel rendering
 // ============================================================
 function renderPanel() {
-  document.getElementById("pc-name").textContent = PC_DATA.fullname;
+  document.getElementById("pc-name").textContent = PC_DATA.fullname + " · " + PC_DATA.name;
   document.getElementById("pc-meta").textContent =
     PC_DATA.occupation + " · " + PC_DATA.age + " 岁 · " + PC_DATA.gender;
 
