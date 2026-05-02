@@ -932,12 +932,12 @@ nav#choices .restart, nav#choices .next-act {
   <header class="hud" id="hud">
     <button class="pc-chip" id="open-panel" aria-label="打开角色面板">
       <span class="icon">📋</span>
-      <span>罗昕</span>
+      <span id="pc-chip-name">罗昕</span>
       <span>SAN <b id="san">—</b></span>
     </button>
-    <span class="stat">你 <b id="fear-xin">—</b></span>
-    <span class="stat">志勇 <b id="fear-zy">—</b></span>
-    <span class="stat">张怡 <b id="fear-zy2">—</b></span>
+    <span class="stat" data-fear-slot="1"><span class="lbl">—</span> <b id="fear-xin">—</b></span>
+    <span class="stat" data-fear-slot="2"><span class="lbl">—</span> <b id="fear-zy">—</b></span>
+    <span class="stat" data-fear-slot="3"><span class="lbl">—</span> <b id="fear-zy2">—</b></span>
     <span class="stat" id="loc-stat" hidden>📍 <b id="location-name">—</b></span>
     <span class="stat ecology-stat" id="ecology-stat" hidden>生态 <span class="ecology-bar" id="ecology-bar"></span></span>
     <span class="stat">回合 <b id="rounds">0</b></span>
@@ -1113,9 +1113,10 @@ const ACHIEVEMENTS = {
 
 // 跨 Act 转移的 VAR 名（标量）
 const TRANSFER_VARS = [
-  "理智_昕", "HP_昕",
-  "恐惧_昕", "恐惧_志勇", "恐惧_张怡",
-  "信任_昕", "信任_志勇", "信任_张怡",
+  "理智_PC", "HP_PC",
+  "当前PC名", "当前PC昵称",
+  "恐惧_昕", "恐惧_砚波", "恐惧_志勇", "恐惧_张怡",
+  "信任_昕", "信任_砚波", "信任_志勇", "信任_张怡",
   "主厨刀_unlocked", "辣椒面_used",
   "战斗结局", "已进过泡面", "seed",
 ];
@@ -1297,7 +1298,10 @@ function appendParagraph(text, cls) {
 
 function renderHUD() {
   const v = story.variablesState;
-  document.getElementById("san").textContent = v["理智_昕"];
+  document.getElementById("san").textContent = v["理智_PC"];
+  // 当前PC 名显示（pc-chip 名字）
+  const pcName = v["当前PC昵称"] || "昕";
+  document.getElementById("pc-chip-name").textContent = v["当前PC名"] || "罗昕";
   const setFear = (id, val) => {
     const el = document.getElementById(id);
     el.textContent = val;
@@ -1307,9 +1311,16 @@ function renderHUD() {
       else stat.classList.remove("warn");
     }
   };
-  setFear("fear-xin", v["恐惧_昕"]);
-  setFear("fear-zy", v["恐惧_志勇"]);
-  setFear("fear-zy2", v["恐惧_张怡"]);
+  // 其他 3 PC 顺序: 固定 [昕, 砚波, 志勇, 张怡] 中跳过当前PC
+  const allPCs = ["昕", "砚波", "志勇", "张怡"];
+  const others = allPCs.filter(n => n !== pcName);
+  const slots = [["fear-xin", 1], ["fear-zy", 2], ["fear-zy2", 3]];
+  slots.forEach(([id, idx], i) => {
+    const npcName = others[i];
+    setFear(id, v["恐惧_" + npcName]);
+    const lblEl = document.querySelector(`[data-fear-slot="${idx}"] .lbl`);
+    if (lblEl) lblEl.textContent = npcName;
+  });
   document.getElementById("rounds").textContent = v["回合数"] || 0;
   if (sheet.classList.contains("open")) {
     renderPanel();
@@ -1618,8 +1629,8 @@ function renderPanel() {
   }
 
   const v = story ? story.variablesState : {};
-  const liveSAN = story ? v["理智_昕"] : PC_DATA.derived.SAN_max;
-  const liveHP = story ? v["HP_昕"] : PC_DATA.derived.HP_max;
+  const liveSAN = story ? v["理智_PC"] : PC_DATA.derived.SAN_max;
+  const liveHP = story ? v["HP_PC"] : PC_DATA.derived.HP_max;
   const derEl = document.getElementById("pc-derived");
   derEl.innerHTML = "";
   [
