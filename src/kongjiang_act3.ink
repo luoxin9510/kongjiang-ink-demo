@@ -13,6 +13,7 @@ INCLUDE _helpers_act3.ink
 INCLUDE act3_scenes.ink
 INCLUDE act3_boss.ink
 INCLUDE kongjiang_endings.ink
+INCLUDE 喘息夜2.ink
 
 ~ 应用seed()
 ~ 计算神秘学加成()
@@ -20,7 +21,9 @@ INCLUDE kongjiang_endings.ink
 // HTML 端注入 Act 2 末状态：Act3路径 + vars
 // 默认 Act3路径 = 1（debug）
 
--> a3_序幕
+// 多 PC 路线: 喘息夜 2 (Act2→Act3 桥接) 在 act 3 主线之前
+~ 推进阶段(3)
+-> 喘息夜2
 
 
 // ============================================================
