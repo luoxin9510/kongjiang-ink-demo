@@ -1956,13 +1956,17 @@ function hidePCSelect() {
   document.getElementById("title-screen").hidden = false;
 }
 
-// PC 卡片点击 handler 在 Task 8.2 实现 (set 当前PC URL param + 启动游戏)
-// 此处仅 wire 返回按钮
+// PC 卡片点击: redirect 到 ?act=0&pc=X，由 bootstrap 注入 当前PC LIST var
 document.querySelectorAll(".pc-select-card").forEach(card => {
   card.onclick = () => {
     const pc = card.dataset.pc;
-    // TODO Task 8.2: set ink var 当前PC + start game
-    alert("Task 8.2 待实施: 选择 " + pc + " 后将进入剧情");
+    const seedInput = document.getElementById("seed-input").value;
+    const params = new URLSearchParams();
+    params.set("act", "0");
+    params.set("pc", pc);
+    if (seedInput) params.set("seed", seedInput);
+    if (isDevMode()) params.set("dev", "1");
+    location.href = "?" + params.toString();
   };
 });
 document.getElementById("pc-select-back").onclick = hidePCSelect;
@@ -2042,7 +2046,7 @@ document.getElementById("show-achievements").onclick = () => {
 // ============================================================
 // Game start (URL ?act=N)
 // ============================================================
-async function startGame(act, seedOverride, continueFromSave) {
+async function startGame(act, seedOverride, continueFromSave, selectedPC) {
   currentAct = act;
   const url = `kongjiang_act${act}.json`;
   try {
@@ -2054,6 +2058,15 @@ async function startGame(act, seedOverride, continueFromSave) {
     // Seed injection (Act 1 supports it natively; Act 0 has hardcoded seed but can override)
     if (seedOverride) {
       try { story.variablesState["seed"] = parseInt(seedOverride, 10); } catch {}
+    }
+
+    // 多 PC: 注入 当前PC LIST var (act0 入口的 ~ 初始化PC(当前PC) 会读到)
+    if (selectedPC) {
+      try {
+        story.variablesState["当前PC"] = inkjs.InkList.FromString(selectedPC, story);
+      } catch (e) {
+        console.warn("当前PC LIST 注入失败:", e);
+      }
     }
 
     titleScreen.classList.add("hidden");
@@ -2099,9 +2112,10 @@ const urlParams = new URLSearchParams(location.search);
 const requestedAct = urlParams.get("act");
 const requestedSeed = urlParams.get("seed");
 const isContinue = urlParams.get("continue") === "1";
+const requestedPC = urlParams.get("pc");
 
 if (requestedAct !== null) {
-  startGame(parseInt(requestedAct, 10) || 0, requestedSeed, isContinue);
+  startGame(parseInt(requestedAct, 10) || 0, requestedSeed, isContinue, requestedPC);
 }
 // Otherwise stay on title screen
 </script>
