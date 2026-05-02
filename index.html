@@ -224,6 +224,100 @@ body {
 .title-screen .langs a { color: var(--dim); margin: 0 8px; text-decoration: none; }
 .title-screen .langs a:hover { color: var(--fg); }
 
+/* ============ PC Select screen ============ */
+.pc-select-screen {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  z-index: 100;
+  display: flex; flex-direction: column;
+  align-items: center;
+  padding: 32px 24px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.pc-select-screen[hidden] { display: none; }
+.pc-select-screen h2 {
+  font-size: 24px; font-weight: 400;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  margin: 0 0 4px;
+  text-shadow: 0 0 20px rgba(184, 58, 58, 0.25);
+}
+.pc-select-screen .pc-subtitle {
+  font-size: 13px; color: var(--dim);
+  letter-spacing: 0.2em;
+  margin: 0 0 28px;
+}
+.pc-select-cards {
+  display: flex; flex-direction: column; gap: 12px;
+  width: 100%; max-width: 360px;
+}
+.pc-select-card {
+  appearance: none;
+  background: var(--panel);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.pc-select-card:active,
+.pc-select-card:hover {
+  background: var(--panel-hover);
+  border-color: var(--accent);
+}
+.pc-select-card .pc-name {
+  font-size: 18px; letter-spacing: 0.08em;
+  color: var(--gold);
+  font-weight: 500;
+}
+.pc-select-card .pc-fullname {
+  font-size: 11px; color: var(--dim2);
+  letter-spacing: 0.1em;
+  margin-top: -2px;
+}
+.pc-select-card .pc-occupation {
+  font-size: 13px; color: var(--dim);
+}
+.pc-select-card .pc-stats {
+  font-size: 12px; color: var(--dim);
+  letter-spacing: 0.05em;
+  font-family: "Source Code Pro", "Consolas", monospace;
+}
+.pc-select-card .pc-hook {
+  font-size: 14px;
+  color: var(--fg);
+  font-style: italic;
+  border-left: 2px solid var(--accent);
+  padding-left: 10px;
+  margin: 4px 0;
+}
+.pc-select-card .pc-cta {
+  font-size: 13px; color: var(--dim);
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+.pc-select-back {
+  appearance: none;
+  background: transparent;
+  color: var(--dim);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 24px;
+  -webkit-tap-highlight-color: transparent;
+}
+.pc-select-back:hover { color: var(--fg); border-color: var(--accent); }
+
 /* ============ HUD ============ */
 header.hud {
   flex: 0 0 auto;
@@ -783,6 +877,44 @@ nav#choices .restart, nav#choices .next-act {
   <div style="margin-top:24px;font-size:10px;color:#444;letter-spacing:0.2em;text-align:center;" id="build-tag">BUILD 2026-05-02-C</div>
 </div>
 
+<!-- PC Select Screen -->
+<div class="pc-select-screen" id="pc-select-screen" hidden>
+  <h2>选择你的角色</h2>
+  <p class="pc-subtitle">控江路 302 室 · 4 个高三学生</p>
+  <div class="pc-select-cards">
+    <button class="pc-select-card" data-pc="昕">
+      <div class="pc-name">昕</div>
+      <div class="pc-fullname">全名：罗昕</div>
+      <div class="pc-occupation">高三学生 · 吃货 / 社交核心</div>
+      <div class="pc-stats">STR 65 · DEX 70 · INT 65 · 主厨刀</div>
+      <div class="pc-hook">"我有主厨刀，藏在床底。"</div>
+      <div class="pc-cta">▶ 扮演昕</div>
+    </button>
+    <button class="pc-select-card" data-pc="砚波">
+      <div class="pc-name">砚波</div>
+      <div class="pc-occupation">高三学生 · 健身狂 / 邋遢大王</div>
+      <div class="pc-stats">STR 75 · INT 80 · 格斗 65</div>
+      <div class="pc-hook">"我能打。但我先看一眼。"</div>
+      <div class="pc-cta">▶ 扮演砚波</div>
+    </button>
+    <button class="pc-select-card" data-pc="志勇">
+      <div class="pc-name">志勇</div>
+      <div class="pc-occupation">高三学生 · 隐藏宅男 / 警察世家</div>
+      <div class="pc-stats">SIZ 90 · STR 85 · DB +1D6</div>
+      <div class="pc-hook">"我比你想象的怕。"</div>
+      <div class="pc-cta">▶ 扮演志勇</div>
+    </button>
+    <button class="pc-select-card" data-pc="张怡">
+      <div class="pc-name">张怡</div>
+      <div class="pc-occupation">高三学生 · 数学天才 / 魔兽宅</div>
+      <div class="pc-stats">INT 85 · POW 70 · 神秘学加成</div>
+      <div class="pc-hook">"如果出不去，可能也行。"</div>
+      <div class="pc-cta">▶ 扮演张怡</div>
+    </button>
+  </div>
+  <button class="pc-select-back" id="pc-select-back">← 返回标题</button>
+</div>
+
 <!-- Chapter Select Modal -->
 <div class="modal-scrim" id="chapter-modal" hidden>
   <div class="modal-card">
@@ -800,12 +932,12 @@ nav#choices .restart, nav#choices .next-act {
   <header class="hud" id="hud">
     <button class="pc-chip" id="open-panel" aria-label="打开角色面板">
       <span class="icon">📋</span>
-      <span>罗昕</span>
+      <span id="pc-chip-name">罗昕</span>
       <span>SAN <b id="san">—</b></span>
     </button>
-    <span class="stat">你 <b id="fear-xin">—</b></span>
-    <span class="stat">志勇 <b id="fear-zy">—</b></span>
-    <span class="stat">张怡 <b id="fear-zy2">—</b></span>
+    <span class="stat" data-fear-slot="1"><span class="lbl">—</span> <b id="fear-xin">—</b></span>
+    <span class="stat" data-fear-slot="2"><span class="lbl">—</span> <b id="fear-zy">—</b></span>
+    <span class="stat" data-fear-slot="3"><span class="lbl">—</span> <b id="fear-zy2">—</b></span>
     <span class="stat" id="loc-stat" hidden>📍 <b id="location-name">—</b></span>
     <span class="stat ecology-stat" id="ecology-stat" hidden>生态 <span class="ecology-bar" id="ecology-bar"></span></span>
     <span class="stat">回合 <b id="rounds">0</b></span>
@@ -981,10 +1113,11 @@ const ACHIEVEMENTS = {
 
 // 跨 Act 转移的 VAR 名（标量）
 const TRANSFER_VARS = [
-  "理智_昕", "HP_昕",
-  "恐惧_昕", "恐惧_志勇", "恐惧_张怡",
-  "信任_昕", "信任_志勇", "信任_张怡",
-  "主厨刀_unlocked", "辣椒面_used",
+  "理智_PC", "HP_PC",
+  "当前PC名", "当前PC昵称",
+  "恐惧_昕", "恐惧_砚波", "恐惧_志勇", "恐惧_张怡",
+  "信任_昕", "信任_砚波", "信任_志勇", "信任_张怡",
+  "主厨刀_unlocked", "砚波_弹力带_unlocked", "志勇_手电_unlocked", "张怡_旧本_unlocked", "辣椒面_used",
   "战斗结局", "已进过泡面", "seed",
 ];
 
@@ -1165,7 +1298,10 @@ function appendParagraph(text, cls) {
 
 function renderHUD() {
   const v = story.variablesState;
-  document.getElementById("san").textContent = v["理智_昕"];
+  document.getElementById("san").textContent = v["理智_PC"];
+  // 当前PC 名显示（pc-chip 名字）
+  const pcName = v["当前PC昵称"] || "昕";
+  document.getElementById("pc-chip-name").textContent = v["当前PC名"] || "罗昕";
   const setFear = (id, val) => {
     const el = document.getElementById(id);
     el.textContent = val;
@@ -1175,9 +1311,16 @@ function renderHUD() {
       else stat.classList.remove("warn");
     }
   };
-  setFear("fear-xin", v["恐惧_昕"]);
-  setFear("fear-zy", v["恐惧_志勇"]);
-  setFear("fear-zy2", v["恐惧_张怡"]);
+  // 其他 3 PC 顺序: 固定 [昕, 砚波, 志勇, 张怡] 中跳过当前PC
+  const allPCs = ["昕", "砚波", "志勇", "张怡"];
+  const others = allPCs.filter(n => n !== pcName);
+  const slots = [["fear-xin", 1], ["fear-zy", 2], ["fear-zy2", 3]];
+  slots.forEach(([id, idx], i) => {
+    const npcName = others[i];
+    setFear(id, v["恐惧_" + npcName]);
+    const lblEl = document.querySelector(`[data-fear-slot="${idx}"] .lbl`);
+    if (lblEl) lblEl.textContent = npcName;
+  });
   document.getElementById("rounds").textContent = v["回合数"] || 0;
   if (sheet.classList.contains("open")) {
     renderPanel();
@@ -1486,8 +1629,8 @@ function renderPanel() {
   }
 
   const v = story ? story.variablesState : {};
-  const liveSAN = story ? v["理智_昕"] : PC_DATA.derived.SAN_max;
-  const liveHP = story ? v["HP_昕"] : PC_DATA.derived.HP_max;
+  const liveSAN = story ? v["理智_PC"] : PC_DATA.derived.SAN_max;
+  const liveHP = story ? v["HP_PC"] : PC_DATA.derived.HP_max;
   const derEl = document.getElementById("pc-derived");
   derEl.innerHTML = "";
   [
@@ -1810,13 +1953,34 @@ function startNewGame() {
     if (!confirm("发现已有存档。开始新游戏会清空当前进度，确定继续？")) return;
   }
   clearSave();
-  const seedInput = document.getElementById("seed-input").value;
-  const params = new URLSearchParams();
-  params.set("act", "0");
-  if (seedInput) params.set("seed", seedInput);
-  if (isDevMode()) params.set("dev", "1");
-  location.href = "?" + params.toString();
+  // 多 PC 路线: 显示 PC 选择屏 (不直接进游戏)
+  showPCSelect();
 }
+
+function showPCSelect() {
+  document.getElementById("title-screen").hidden = true;
+  document.getElementById("pc-select-screen").hidden = false;
+}
+
+function hidePCSelect() {
+  document.getElementById("pc-select-screen").hidden = true;
+  document.getElementById("title-screen").hidden = false;
+}
+
+// PC 卡片点击: redirect 到 ?act=0&pc=X，由 bootstrap 注入 当前PC LIST var
+document.querySelectorAll(".pc-select-card").forEach(card => {
+  card.onclick = () => {
+    const pc = card.dataset.pc;
+    const seedInput = document.getElementById("seed-input").value;
+    const params = new URLSearchParams();
+    params.set("act", "0");
+    params.set("pc", pc);
+    if (seedInput) params.set("seed", seedInput);
+    if (isDevMode()) params.set("dev", "1");
+    location.href = "?" + params.toString();
+  };
+});
+document.getElementById("pc-select-back").onclick = hidePCSelect;
 
 function continueGame() {
   const save = loadSave();
@@ -1893,7 +2057,7 @@ document.getElementById("show-achievements").onclick = () => {
 // ============================================================
 // Game start (URL ?act=N)
 // ============================================================
-async function startGame(act, seedOverride, continueFromSave) {
+async function startGame(act, seedOverride, continueFromSave, selectedPC) {
   currentAct = act;
   const url = `kongjiang_act${act}.json`;
   try {
@@ -1905,6 +2069,15 @@ async function startGame(act, seedOverride, continueFromSave) {
     // Seed injection (Act 1 supports it natively; Act 0 has hardcoded seed but can override)
     if (seedOverride) {
       try { story.variablesState["seed"] = parseInt(seedOverride, 10); } catch {}
+    }
+
+    // 多 PC: 注入 当前PC LIST var (act0 入口的 ~ 初始化PC(当前PC) 会读到)
+    if (selectedPC) {
+      try {
+        story.variablesState["当前PC"] = inkjs.InkList.FromString(selectedPC, story);
+      } catch (e) {
+        console.warn("当前PC LIST 注入失败:", e);
+      }
     }
 
     titleScreen.classList.add("hidden");
@@ -1950,9 +2123,10 @@ const urlParams = new URLSearchParams(location.search);
 const requestedAct = urlParams.get("act");
 const requestedSeed = urlParams.get("seed");
 const isContinue = urlParams.get("continue") === "1";
+const requestedPC = urlParams.get("pc");
 
 if (requestedAct !== null) {
-  startGame(parseInt(requestedAct, 10) || 0, requestedSeed, isContinue);
+  startGame(parseInt(requestedAct, 10) || 0, requestedSeed, isContinue, requestedPC);
 }
 // Otherwise stay on title screen
 </script>

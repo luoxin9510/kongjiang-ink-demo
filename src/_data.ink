@@ -42,6 +42,9 @@ VAR 上次结果 = 0
 // === 序章 / 战斗状态（保留以便跨 Act 引用）===
 VAR 已进过泡面 = false
 VAR 主厨刀_unlocked = false
+VAR 砚波_弹力带_unlocked = false
+VAR 志勇_手电_unlocked = false
+VAR 张怡_旧本_unlocked = false
 VAR 辣椒面_used = false
 VAR 敌人血量 = 8
 VAR 战斗回合 = 0
