@@ -10,6 +10,7 @@ INCLUDE _data.ink
 INCLUDE _helpers.ink
 INCLUDE _helpers_act1.ink
 INCLUDE act2_scenes.ink
+INCLUDE 喘息夜.ink
 
 // === Act 2 启动序列 ===
 
@@ -29,7 +30,7 @@ INCLUDE act2_scenes.ink
 
 // HTML 端可在故事启动前注入 Act 1 末状态（vars: 理智_PC/HP_PC/恐惧_志勇张怡/信任_志勇张怡/seed/...）
 
--> a2_序幕
+-> 喘息夜1
 
 
 // ============================================================
