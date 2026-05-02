@@ -20,15 +20,12 @@ VAR 理智_昕 = 64
 VAR HP_昕 = 12
 
 // === 队友 fear / trust ===
-VAR 恐惧_昕 = 35
 VAR 恐惧_志勇 = 20
 VAR 恐惧_张怡 = 25
-VAR 信任_昕 = 70
 VAR 信任_志勇 = 60
 VAR 信任_张怡 = 65
 
 // === 队友互斥状态 ===
-VAR 状态_昕 = (平静)
 VAR 状态_志勇 = (平静)
 VAR 状态_张怡 = (平静)
 
@@ -176,7 +173,6 @@ VAR 最终结局 = 0       // 1-7 = E1-E7
 
 // === 渐进式 v2 / flavor 系统 ===
 VAR act_phase = 0   // 0=Act0, 1=Act1, 2=Act2, 3=喘息夜2及之后
-VAR 陪伴_昕 = false
 VAR 陪伴_志勇 = false
 VAR 陪伴_张怡 = false
 VAR 陪伴_砚波 = false
