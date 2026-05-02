@@ -15,6 +15,9 @@ INCLUDE act2_scenes.ink
 
 ~ 应用seed()
 
+// 推进 act_phase 至 2（解锁中期 flavor pockets）
+~ 推进阶段(2)
+
 // 随机分配 锚点 B NPC
 ~ temp 选中B = 随机取(锚点B候选)
 {

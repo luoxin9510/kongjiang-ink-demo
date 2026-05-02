@@ -51,6 +51,13 @@ VAR 敌人血量 = 8
 VAR 战斗回合 = 0
 VAR 战斗结局 = 0   // 1=击退 2=超时 3=倒地 4=逃脱
 
+// === 渐进式 v2 / flavor 系统（Act0 局部声明，与 _data.ink 跨 Act 共享变量同义）===
+VAR act_phase = 0
+VAR 陪伴_昕 = false
+VAR 陪伴_志勇 = false
+VAR 陪伴_张怡 = false
+VAR 陪伴_砚波 = false
+
 INCLUDE _helpers.ink
 
 ~ SEED_RANDOM(2026)
