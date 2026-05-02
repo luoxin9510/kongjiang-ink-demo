@@ -161,6 +161,8 @@ git commit -m "refactor(act0): 寝室傍晚改渐进式 9 选项 → 3 顶层"
 
 ### Task 1.3: 重构 `场景_夜半叩门` (act0)
 
+✅ **Skipped** — 场景实际是 3+3 顺序结构（ink gather `-` 分隔两段菜单），任意 render 时刻 ≤4 选项，已合规渐进式原则。Brainstorm scan 阶段用 `awk` 数 `*`/`+` 总数 = 6 没意识到 gather 把它们分成两次渲染，是 false positive。原 3+3 结构保留——敲门#1（反应）和敲门#2（决断）是两个不同戏剧拍点，合并会破坏剧情节奏。
+
 **Files:** Modify `src/kongjiang_act0.ink`
 
 - [ ] **Step 1: 读取当前 `=== 场景_夜半叩门 ===` 完整内容**，记录 6 个原 divert 目标。
