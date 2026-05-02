@@ -177,7 +177,7 @@ VAR 陪伴_砚波 = false
 LIST PC列表 = 昕, 砚波, 志勇, 张怡
 VAR 当前PC = (昕)
 
-// 通用 PC stats（替代原 理智_昕 / HP_昕）
+// 通用 PC stats（替代原 理智_PC / HP_PC）
 VAR 理智_PC = 64
 VAR HP_PC = 12
 VAR 队友存活_PC = true
