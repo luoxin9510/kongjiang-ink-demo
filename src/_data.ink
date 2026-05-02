@@ -193,3 +193,7 @@ VAR 恐惧_砚波 = 0
 VAR 状态_昕 = (平静)
 VAR 状态_砚波 = (平静)
 VAR 陪伴_昕 = false
+
+// === 张怡 signature 提前解锁母核位置（spec §4.4）===
+VAR 母核_位置已知 = false   // PC=张怡 走廊看出几何后 = true,act3 boss 阶段 1 减 1 回合
+VAR 母核_提前打击_用过 = false   // 防止阶段 1 循环时重复触发
